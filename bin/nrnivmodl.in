@@ -129,12 +129,15 @@ echo '#include <stdio.h>
 #include "hocdec.h"
 extern int nrnmpi_myid;
 extern int nrn_nobanner_;
+extern int has_run;
 ' > mod_func.c
 for i in $bfiles ; do
 	echo 'extern void _'$i'_reg(void);'
 done >> mod_func.c
 echo '
 void modl_reg(){
+  printf("Hello Pramod\\n");
+  if(has_run) return;
   if (!nrn_nobanner_) if (nrnmpi_myid < 1) {
     fprintf(stderr, "Additional mechanisms from files'$newline'");
 ' >> mod_func.c
@@ -152,7 +155,7 @@ for i in $bfiles; do
 	MODOBJS="$MODOBJS $i.o"
 done >> mod_func.c
 
-echo "}" >> mod_func.c
+echo "has_run = 1; }" >> mod_func.c
 
 
 if test -n "$cfiles" ; then
